@@ -1,20 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from "react";
+import * as MediaLibrary from "expo-media-library";
+import Main from "./screens/Main";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+export default function ImagePickerExample() {
+  useEffect(() => {
+    const askPermission = async () => {
+      let { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted" || status === "denied") {
+        alert("h");
+      }
+    };
+    askPermission();
+  }, []);
+  return <Main />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
