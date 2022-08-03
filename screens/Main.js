@@ -24,26 +24,43 @@ const Main = () => {
   const [imageCompressed, setImageCompressed] = useState(null);
   const [sliderValue, setSliderValue] = useState(0.5);
   const [showImageCompare, setShowImageCompare] = useState(false);
-  const [displayTooltip, setDisplayTooltip] = useState(false);
+
+  const [displayTooltipBefore, setDisplayTooltipBefore] = useState(false);
+  const [displayTooltipAfter, setDisplayTooltipAfter] = useState(false);
+  const [displayTooltipFilePath, setDisplayTooltipFilePath] = useState(false);
+
+  const [fileSize, setFileSize] = useState(null)
 
   const compressImage = async (uri) => {
+    const compressValue = sliderValue <= 0.3 ? 0.3 : sliderValue;
     const result = await manipulateAsync(uri, [], {
-      compress: parseFloat(sliderValue),
+      compress: parseFloat(compressValue),
       format: SaveFormat.JPEG,
+      base64: true,
     });
-    return result.uri;
+    return result;
   };
 
+  function bytesToSize(base64Length) {
+    const bytes = 4 * Math.ceil((base64Length / 3))*0.5624896334383812;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    if (bytes == 0) return "0 Byte";
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+  }
+
   const handlePickImage = async () => {
-    const imageUri = await pickImage();
-    if (imageUri) {
-      setImage(imageUri);
+    const getImage = await pickImage();
+    if (getImage) {
+      setImage(getImage.uri);
+      setFileSize(bytesToSize(getImage.base64.length));
     }
   };
 
   const handleCompressImage = async () => {
     const compressResult = await compressImage(image);
-    setImageCompressed(compressResult);
+    setImageCompressed(compressResult.uri);
+    setFileSize(bytesToSize(compressResult.base64.length));
   };
 
   const handleSaveImage = async () => {
@@ -57,10 +74,25 @@ const Main = () => {
     setSliderValue(rounderValue);
   };
 
-  const handleDisplayToolTip = () => {
-    setDisplayTooltip(true);
+  const handleDisplayToolTipBefore = () => {
+    setDisplayTooltipBefore(true);
     setTimeout(() => {
-      setDisplayTooltip(false);
+      setDisplayTooltipBefore(false);
+    }, 2000);
+  };
+
+  const handleDisplayToolTipAfter = () => {
+    setDisplayTooltipBefore(false);
+    setDisplayTooltipAfter(true);
+    setTimeout(() => {
+      setDisplayTooltipAfter(false);
+    }, 2000);
+  };
+
+  const handleDisplayToolFilePath = () => {
+    setDisplayTooltipFilePath(true);
+    setTimeout(() => {
+      setDisplayTooltipFilePath(false);
     }, 2000);
   };
 
@@ -82,11 +114,13 @@ const Main = () => {
       ) : imageCompressed ? (
         <Pressable
           onLongPress={() => {
-            handleDisplayToolTip();
+            handleDisplayToolTipBefore();
             setShowImageCompare(true);
           }}
-          onPressOut={() => setShowImageCompare(false)}
-          onPress={handlePickImage}
+          onPressOut={() => {
+            handleDisplayToolTipAfter();
+            setShowImageCompare(false);
+          }}
         >
           <Image
             source={{ uri: !showImageCompare ? imageCompressed : image }}
@@ -99,11 +133,23 @@ const Main = () => {
         </TouchableOpacity>
       )}
 
-      {displayTooltip && <ToolTip title={"before"} />}
+     {fileSize && <Text style={{textAlign: "center"}}>{fileSize}</Text>}
+
+      {displayTooltipBefore && <ToolTip title={"Before"} />}
+      {displayTooltipAfter && <ToolTip title={"After"} />}
+      {displayTooltipFilePath && <ToolTip title={"Save At /pied-pipper"} />}
+
       <SliderStyle onValueChange={handleSlider} value={sliderValue} />
 
       {imageCompressed ? (
-        <ButtonStyle onPress={handleSaveImage}>Save</ButtonStyle>
+        <ButtonStyle
+          onPress={() => {
+            handleSaveImage();
+            handleDisplayToolFilePath();
+          }}
+        >
+          Save
+        </ButtonStyle>
       ) : (
         <ButtonStyle onPress={handleCompressImage}>Compress</ButtonStyle>
       )}

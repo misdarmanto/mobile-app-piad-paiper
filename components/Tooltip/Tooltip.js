@@ -11,10 +11,12 @@ const ToolTip = ({ title }) => {
         paddingVertical: heightPercentage(1),
         paddingHorizontal: widthPercentage(6),
         height: heightPercentage(5),
+        minWidth: widthPercentage(30),
+        alignItems: "center",
         position: "absolute",
         zIndex: 1,
-        top: heightPercentage(5),
-        left: widthPercentage(28)
+        top: heightPercentage(10),
+        left: widthPercentage(35),
       }}
     >
       <Text style={{ color: "#FFF" }}>{title}</Text>
