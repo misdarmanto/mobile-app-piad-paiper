@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import * as MediaLibrary from "expo-media-library";
 import Main from "./screens/Main";
+import { NativeBaseProvider } from "native-base";
 
 export default function ImagePickerExample() {
   useEffect(() => {
@@ -12,5 +13,9 @@ export default function ImagePickerExample() {
     };
     askPermission();
   }, []);
-  return <Main />;
+  return (
+    <NativeBaseProvider>
+      <Main />
+    </NativeBaseProvider>
+  );
 }

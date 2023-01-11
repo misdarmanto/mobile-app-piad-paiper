@@ -12,7 +12,7 @@ const Header = () => {
         alignItems: "center",
         height: heightPercentage(12),
         backgroundColor: ColorsList("white"),
-        paddingHorizontal: widthPercentage(2),
+        paddingHorizontal: widthPercentage(7),
         paddingTop: heightPercentage(3),
       }}
     >

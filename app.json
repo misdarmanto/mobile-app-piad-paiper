@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "piad-paiper",
-    "slug": "piad-paiper",
+    "name": "pied-pipper",
+    "slug": "pied-pipper",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,14 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your photos"
-        }
-      ]
-    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -29,10 +21,12 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode" : 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.misdar.piedpipper"
     },
     "web": {
       "favicon": "./assets/favicon.png"
